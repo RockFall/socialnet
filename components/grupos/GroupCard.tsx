@@ -6,18 +6,36 @@ import { MapPin, Users, Lock, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AvatarGroup } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
-import type { Group } from '@/lib/data';
-import { getUnreadCount, currentUser } from '@/lib/data';
 
-interface GroupCardProps {
-  group: Group;
-  variant?: 'default' | 'compact' | 'horizontal';
-  showMembers?: boolean;
+interface GroupMember {
+  user: {
+    id: string;
+    name: string;
+    photo: string | null;
+  };
+  role: string;
 }
 
-export function GroupCard({ group, variant = 'default', showMembers = true }: GroupCardProps) {
-  const unreadCount = getUnreadCount(group.id, currentUser.id);
+interface GroupCardGroup {
+  id: string;
+  name: string;
+  description: string;
+  photo: string;
+  type: string;
+  location?: string | null;
+  isPrivate: boolean;
+  memberCount: number;
+  members: GroupMember[];
+}
 
+interface GroupCardProps {
+  group: GroupCardGroup;
+  variant?: 'default' | 'compact' | 'horizontal';
+  showMembers?: boolean;
+  unreadCount?: number;
+}
+
+export function GroupCard({ group, variant = 'default', showMembers = true, unreadCount = 0 }: GroupCardProps) {
   if (variant === 'compact') {
     return (
       <Link
@@ -94,6 +112,12 @@ export function GroupCard({ group, variant = 'default', showMembers = true }: Gr
     );
   }
 
+  const membersForAvatar = group.members.map(m => ({
+    id: m.user.id,
+    name: m.user.name,
+    photo: m.user.photo || '',
+  }));
+
   return (
     <Link
       href={`/grupos/${group.id}`}
@@ -124,9 +148,9 @@ export function GroupCard({ group, variant = 'default', showMembers = true }: Gr
       <div className="p-4">
         <p className="text-sm text-ink-600 line-clamp-2 mb-3">{group.description}</p>
         <div className="flex items-center justify-between">
-          {showMembers && group.members.length > 0 && (
+          {showMembers && membersForAvatar.length > 0 && (
             <AvatarGroup
-              users={group.members.map(m => m.user)}
+              users={membersForAvatar}
               max={4}
               size="sm"
             />

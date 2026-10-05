@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String
+  name         String
+  photo        String?
+  bio          String?
+  location     String?
+  interests    String   @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  memberships    GroupMember[]
+  eventAttendees EventAttendee[]
+  ideas          Idea[]
+  ideaInterests  IdeaInterest[]
+  posts          Post[]
+  memories       Memory[]
+  messages       ChatMessage[]
+  messageReads   MessageRead[]
+  reactions      MessageReaction[]
+  invitesSent    Invite[]          @relation("InvitesSent")
+  invitesReceived Invite[]         @relation("InvitesReceived")
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  photo       String
+  type        String   @default("friends")
+  location    String?
+  interests   String   @default("[]")
+  isPrivate   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members  GroupMember[]
+  events   Event[]
+  ideas    Idea[]
+  posts    Post[]
+  messages ChatMessage[]
+  invites  Invite[]
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  userId   String
+  groupId  String
+  role     String   @default("member")
+  joinedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+}
+
+model Event {
+  id              String    @id @default(cuid())
+  groupId         String
+  title           String
+  description     String
+  date            DateTime
+  endDate         DateTime?
+  location        String
+  locationDetails String?
+  photo           String?
+  status          String    @default("upcoming")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  group     Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  attendees EventAttendee[]
+  memories  Memory[]
+  invites   Invite[]
+}
+
+model EventAttendee {
+  id      String @id @default(cuid())
+  eventId String
+  userId  String
+  status  String @default("going")
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+model Idea {
+  id          String   @id @default(cuid())
+  groupId     String
+  title       String
+  description String?
+  suggestedById String
+  status      String   @default("open")
+  eventId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group       Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  suggestedBy User           @relation(fields: [suggestedById], references: [id], onDelete: Cascade)
+  interests   IdeaInterest[]
+}
+
+model IdeaInterest {
+  id        String   @id @default(cuid())
+  ideaId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  idea Idea @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([ideaId, userId])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  groupId   String
+  userId    String
+  content   String
+  images    String   @default("[]")
+  eventId   String?
+  reactions String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Memory {
+  id        String   @id @default(cuid())
+  eventId   String
+  userId    String
+  type      String   @default("photo")
+  content   String
+  caption   String?
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  groupId   String
+  userId    String
+  content   String
+  image     String?
+  replyToId String?
+  createdAt DateTime @default(now())
+
+  group     Group             @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replyTo   ChatMessage?      @relation("MessageReplies", fields: [replyToId], references: [id])
+  replies   ChatMessage[]     @relation("MessageReplies")
+  readBy    MessageRead[]
+  reactions MessageReaction[]
+}
+
+model MessageRead {
+  id        String   @id @default(cuid())
+  messageId String
+  userId    String
+  readAt    DateTime @default(now())
+
+  message ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+}
+
+model MessageReaction {
+  id        String   @id @default(cuid())
+  messageId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  message ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+}
+
+model Invite {
+  id         String   @id @default(cuid())
+  type       String
+  groupId    String?
+  eventId    String?
+  invitedById String
+  invitedUserId String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  group      Group?  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  event      Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  invitedBy  User    @relation("InvitesSent", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedUser User   @relation("InvitesReceived", fields: [invitedUserId], references: [id], onDelete: Cascade)
+}
