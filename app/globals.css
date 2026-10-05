@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  
+  --color-tomato-50: #fef2f1;
+  --color-tomato-100: #fee5e3;
+  --color-tomato-200: #fdcfcc;
+  --color-tomato-300: #faa9a4;
+  --color-tomato-400: #f5746c;
+  --color-tomato-500: #de392b;
+  --color-tomato-600: #cc3226;
+  --color-tomato-700: #ab281e;
+  --color-tomato-800: #8d251c;
+  --color-tomato-900: #75241e;
+  
+  --color-cream-50: #fdfcfa;
+  --color-cream-100: #faf8f3;
+  --color-cream-200: #f6f3ea;
+  --color-cream-300: #ede8da;
+  --color-cream-400: #ddd5c2;
+  --color-cream-500: #c9bda5;
+  
+  --color-ink-50: #f7f7f7;
+  --color-ink-100: #e3e3e3;
+  --color-ink-200: #c8c8c8;
+  --color-ink-300: #a4a4a4;
+  --color-ink-400: #818181;
+  --color-ink-500: #666666;
+  --color-ink-600: #515151;
+  --color-ink-700: #434343;
+  --color-ink-800: #383838;
+  --color-ink-900: #111111;
+}
+
+body {
+  background-color: var(--color-cream-100);
+  color: var(--color-ink-900);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-tomato-100);
+  color: var(--color-tomato-700);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
