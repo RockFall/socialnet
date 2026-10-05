@@ -1,7 +1,7 @@
 import { format, formatDistanceToNow, isToday, isTomorrow, isThisWeek, differenceInDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-export function cn(...classes: (string | undefined | false)[]): string {
+export function cn(...classes: (string | undefined | false | null)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 

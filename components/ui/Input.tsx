@@ -32,9 +32,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               'text-ink-900 placeholder:text-ink-400',
               'focus:outline-none focus:ring-2 focus:ring-tomato-500 focus:border-transparent',
               'transition-colors',
-              leftIcon && 'pl-10',
-              rightIcon && 'pr-10',
-              error && 'border-red-500 focus:ring-red-500',
+              leftIcon ? 'pl-10' : undefined,
+              rightIcon ? 'pr-10' : undefined,
+              error ? 'border-red-500 focus:ring-red-500' : undefined,
               className
             )}
             {...props}
@@ -76,7 +76,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             'text-ink-900 placeholder:text-ink-400',
             'focus:outline-none focus:ring-2 focus:ring-tomato-500 focus:border-transparent',
             'transition-colors resize-none',
-            error && 'border-red-500 focus:ring-red-500',
+            error ? 'border-red-500 focus:ring-red-500' : undefined,
             className
           )}
           {...props}

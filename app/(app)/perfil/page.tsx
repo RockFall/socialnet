@@ -78,10 +78,8 @@ export default function PerfilPage() {
               <p className="text-sm text-ink-500">encontros</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-ink-900">
-                {new Date().getFullYear() - new Date(currentUser.createdAt || '2024-01-01').getFullYear() || 1}
-              </p>
-              <p className="text-sm text-ink-500">anos</p>
+              <p className="text-2xl font-bold text-ink-900">1</p>
+              <p className="text-sm text-ink-500">ano</p>
             </div>
           </div>
         </Card>
