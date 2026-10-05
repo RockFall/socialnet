@@ -87,6 +87,22 @@ export interface Post {
   reactions: { emoji: string; count: number }[];
 }
 
+export interface ChatMessage {
+  id: string;
+  groupId: string;
+  user: User;
+  content: string;
+  image?: string;
+  replyTo?: {
+    id: string;
+    user: User;
+    content: string;
+  };
+  reactions?: { emoji: string; users: User[] }[];
+  createdAt: Date;
+  readBy: string[];
+}
+
 export const currentUser: User = {
   id: 'me',
   name: 'Ana Carolina',
@@ -542,4 +558,222 @@ export function getGroupPosts(groupId: string): Post[] {
 
 export function getUserGroups(userId: string): Group[] {
   return groups.filter(g => g.members.some(m => m.user.id === userId));
+}
+
+export const chatMessages: ChatMessage[] = [
+  // Grupo Amigos (g1)
+  {
+    id: 'msg1',
+    groupId: 'g1',
+    user: users[1],
+    content: 'E aí galera, confirmado o jantar de sexta?',
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    readBy: ['me', 'u2', 'u3']
+  },
+  {
+    id: 'msg2',
+    groupId: 'g1',
+    user: users[2],
+    content: 'Confirmadíssimo! Já reservei mesa pra 8 pessoas',
+    createdAt: new Date(Date.now() - 1.5 * 60 * 60 * 1000),
+    readBy: ['me', 'u1', 'u3']
+  },
+  {
+    id: 'msg3',
+    groupId: 'g1',
+    user: users[3],
+    content: 'Vou chegar um pouco atrasado, saio do trabalho às 19h',
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+    readBy: ['me', 'u1', 'u2']
+  },
+  {
+    id: 'msg4',
+    groupId: 'g1',
+    user: users[0],
+    content: 'Tranquilo Bruno! A reserva é pras 20h mesmo',
+    replyTo: {
+      id: 'msg3',
+      user: users[3],
+      content: 'Vou chegar um pouco atrasado, saio do trabalho às 19h'
+    },
+    createdAt: new Date(Date.now() - 50 * 60 * 1000),
+    readBy: ['u1', 'u2', 'u3']
+  },
+  {
+    id: 'msg5',
+    groupId: 'g1',
+    user: users[4],
+    content: 'Alguém sabe se tem estacionamento no local?',
+    createdAt: new Date(Date.now() - 30 * 60 * 1000),
+    readBy: ['me', 'u1']
+  },
+  {
+    id: 'msg6',
+    groupId: 'g1',
+    user: users[1],
+    content: 'Tem sim! E é gratuito pra clientes',
+    createdAt: new Date(Date.now() - 25 * 60 * 1000),
+    readBy: ['me', 'u4']
+  },
+  {
+    id: 'msg7',
+    groupId: 'g1',
+    user: users[5],
+    content: 'Gente, olha o que achei! O cardápio deles 😍',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop',
+    createdAt: new Date(Date.now() - 15 * 60 * 1000),
+    readBy: ['me', 'u1', 'u2'],
+    reactions: [{ emoji: '😍', users: [users[0], users[1]] }, { emoji: '🤤', users: [users[2]] }]
+  },
+  {
+    id: 'msg8',
+    groupId: 'g1',
+    user: users[0],
+    content: 'Que demais! Já sei o que vou pedir 🍣',
+    createdAt: new Date(Date.now() - 10 * 60 * 1000),
+    readBy: ['u1', 'u5']
+  },
+  {
+    id: 'msg9',
+    groupId: 'g1',
+    user: users[6],
+    content: 'Pessoal, posso levar a Fernanda? Ela tá querendo conhecer vocês',
+    createdAt: new Date(Date.now() - 5 * 60 * 1000),
+    readBy: ['me', 'u1']
+  },
+  {
+    id: 'msg10',
+    groupId: 'g1',
+    user: users[2],
+    content: 'Claro! Quanto mais gente melhor 🎉',
+    createdAt: new Date(Date.now() - 2 * 60 * 1000),
+    readBy: ['me', 'u6']
+  },
+
+  // Clube do Livro (g2)
+  {
+    id: 'msg11',
+    groupId: 'g2',
+    user: users[5],
+    content: 'Gente, terminei A Metamorfose ontem! Que livro intenso',
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+    readBy: ['me', 'u2', 'u8']
+  },
+  {
+    id: 'msg12',
+    groupId: 'g2',
+    user: users[7],
+    content: 'Também terminei! A transformação do Gregor é uma metáfora tão forte...',
+    createdAt: new Date(Date.now() - 4.5 * 60 * 60 * 1000),
+    readBy: ['me', 'u6']
+  },
+  {
+    id: 'msg13',
+    groupId: 'g2',
+    user: users[0],
+    content: 'Tô na metade ainda! Sem spoilers por favor 🙈',
+    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
+    readBy: ['u6', 'u8']
+  },
+  {
+    id: 'msg14',
+    groupId: 'g2',
+    user: users[5],
+    content: 'Tranquilo Ana! A gente guarda pra discussão presencial',
+    createdAt: new Date(Date.now() - 3.5 * 60 * 60 * 1000),
+    readBy: ['me'],
+    reactions: [{ emoji: '❤️', users: [users[0]] }]
+  },
+  {
+    id: 'msg15',
+    groupId: 'g2',
+    user: users[2],
+    content: 'Qual vai ser o próximo livro? Tenho algumas sugestões!',
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+    readBy: ['me', 'u6', 'u8']
+  },
+
+  // Corredores SP (g4)
+  {
+    id: 'msg16',
+    groupId: 'g4',
+    user: users[3],
+    content: 'Bom dia pessoal! Treino confirmado pro sábado?',
+    createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
+    readBy: ['me', 'u4']
+  },
+  {
+    id: 'msg17',
+    groupId: 'g4',
+    user: users[0],
+    content: 'Confirmado! 🏃‍♀️',
+    createdAt: new Date(Date.now() - 7 * 60 * 60 * 1000),
+    readBy: ['u3', 'u4']
+  },
+  {
+    id: 'msg18',
+    groupId: 'g4',
+    user: users[4],
+    content: 'Eu vou! Mas preciso ir devagar, ainda tô me recuperando da última corrida',
+    createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+    readBy: ['me', 'u3']
+  },
+  {
+    id: 'msg19',
+    groupId: 'g4',
+    user: users[3],
+    content: 'Sem problemas! Vamos ter ritmo pra todos os níveis',
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+    readBy: ['me', 'u4'],
+    reactions: [{ emoji: '💪', users: [users[0], users[4]] }]
+  },
+
+  // Viagem Peru (g6)
+  {
+    id: 'msg20',
+    groupId: 'g6',
+    user: users[1],
+    content: 'Gente, olha esse hostel em Cusco! Parece incrível',
+    image: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&h=400&fit=crop',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    readBy: ['me', 'u2', 'u7']
+  },
+  {
+    id: 'msg21',
+    groupId: 'g6',
+    user: users[0],
+    content: 'Amei! Já temos as passagens compradas?',
+    createdAt: new Date(Date.now() - 23 * 60 * 60 * 1000),
+    readBy: ['u1', 'u2', 'u7']
+  },
+  {
+    id: 'msg22',
+    groupId: 'g6',
+    user: users[2],
+    content: 'Eu e o Lucas já compramos! Tá na hora de vocês 😄',
+    createdAt: new Date(Date.now() - 22 * 60 * 60 * 1000),
+    readBy: ['me', 'u1', 'u7']
+  },
+  {
+    id: 'msg23',
+    groupId: 'g6',
+    user: users[6],
+    content: 'Vou comprar amanhã! Alguém quer ir no mesmo voo?',
+    createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000),
+    readBy: ['me', 'u1', 'u2']
+  }
+];
+
+export function getGroupMessages(groupId: string): ChatMessage[] {
+  return chatMessages
+    .filter(m => m.groupId === groupId)
+    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+}
+
+export function getUnreadCount(groupId: string, userId: string): number {
+  return chatMessages.filter(m => 
+    m.groupId === groupId && 
+    !m.readBy.includes(userId) &&
+    m.user.id !== userId
+  ).length;
 }

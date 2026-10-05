@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Users, Lock } from 'lucide-react';
+import { MapPin, Users, Lock, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AvatarGroup } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import type { Group } from '@/lib/data';
+import { getUnreadCount, currentUser } from '@/lib/data';
 
 interface GroupCardProps {
   group: Group;
@@ -15,6 +16,8 @@ interface GroupCardProps {
 }
 
 export function GroupCard({ group, variant = 'default', showMembers = true }: GroupCardProps) {
+  const unreadCount = getUnreadCount(group.id, currentUser.id);
+
   if (variant === 'compact') {
     return (
       <Link
@@ -38,6 +41,18 @@ export function GroupCard({ group, variant = 'default', showMembers = true }: Gr
             {group.memberCount} {group.memberCount === 1 ? 'pessoa' : 'pessoas'}
           </p>
         </div>
+        {unreadCount > 0 && (
+          <Link
+            href={`/grupos/${group.id}/chat`}
+            className="relative p-2 text-tomato-500 hover:bg-tomato-50 rounded-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-tomato-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          </Link>
+        )}
       </Link>
     );
   }
@@ -116,10 +131,24 @@ export function GroupCard({ group, variant = 'default', showMembers = true }: Gr
               size="sm"
             />
           )}
-          <span className="text-sm text-ink-500 flex items-center gap-1">
-            <Users className="w-4 h-4" />
-            {group.memberCount}
-          </span>
+          <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <Link
+                href={`/grupos/${group.id}/chat`}
+                className="relative p-1.5 text-tomato-500 hover:bg-tomato-50 rounded-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-tomato-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              </Link>
+            )}
+            <span className="text-sm text-ink-500 flex items-center gap-1">
+              <Users className="w-4 h-4" />
+              {group.memberCount}
+            </span>
+          </div>
         </div>
       </div>
     </Link>

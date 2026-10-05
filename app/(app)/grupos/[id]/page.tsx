@@ -30,6 +30,7 @@ import {
   getGroupEvents, 
   getGroupIdeas, 
   getGroupPosts, 
+  getUnreadCount,
   currentUser 
 } from '@/lib/data';
 import { formatRelativeTime, cn } from '@/lib/utils';
@@ -51,6 +52,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   const events = getGroupEvents(group.id);
   const ideas = getGroupIdeas(group.id);
   const posts = getGroupPosts(group.id);
+  const unreadCount = getUnreadCount(group.id, currentUser.id);
   const upcomingEvents = events.filter(e => e.status === 'upcoming');
   const pastEvents = events.filter(e => e.status === 'past');
   const openIdeas = ideas.filter(i => i.status === 'open' || i.status === 'planning');
@@ -375,6 +377,19 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Floating Chat Button */}
+      <Link
+        href={`/grupos/${group.id}/chat`}
+        className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-40 flex items-center justify-center w-14 h-14 bg-tomato-500 text-white rounded-full shadow-lg hover:bg-tomato-600 transition-colors"
+      >
+        <MessageSquare className="w-6 h-6" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-ink-900 text-white text-xs font-bold rounded-full flex items-center justify-center">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
+      </Link>
 
       <CreateIdeaModal 
         isOpen={showIdeaModal} 
